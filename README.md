@@ -14,17 +14,17 @@ One Colab Gradio hub that runs existing shipper/flow pipeline repos **without ch
 ## Colab cell
 
 ```python
-!git clone https://github.com/<you>/rmt-pipeline-hub.git
+!git clone https://github.com/AnnaVitkina/hub-test.git
 import os
-os.chdir('/content/rmt-pipeline-hub')
+os.chdir('/content/hub-test')
 !git pull
 from google.colab import drive
 drive.mount('/content/drive')
 !pip install -q -r requirements.txt
-exec(open('/content/rmt-pipeline-hub/run_hub.py').read())
+exec(open('/content/hub-test/run_hub.py').read())
 ```
 
-Replace `<you>/rmt-pipeline-hub` with wherever you publish this hub. Until then, you can upload this folder to Colab or clone from your own remote.
+`pip install` is required. The cell should stay running and print a local / Colab proxy URL — that is the hub UI.
 
 ## Registered pipelines
 
