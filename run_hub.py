@@ -1,15 +1,15 @@
 """Colab / local entrypoint for the RMT Pipeline Hub.
 
-Colab cell example:
+Colab cell:
 
-    !git clone https://github.com/<you>/rmt-pipeline-hub.git
+    !git clone https://github.com/AnnaVitkina/hub-test.git
     import os
-    os.chdir('/content/rmt-pipeline-hub')
+    os.chdir('/content/hub-test')
     !git pull
     from google.colab import drive
     drive.mount('/content/drive')
     !pip install -q -r requirements.txt
-    exec(open('/content/rmt-pipeline-hub/run_hub.py').read())
+    exec(open('/content/hub-test/run_hub.py').read())
 """
 
 from __future__ import annotations
@@ -18,17 +18,38 @@ import os
 import sys
 from pathlib import Path
 
-# Support Colab-style: exec(open(...).read()) where __file__ is missing.
-if "__file__" in globals():
-    _HUB_ROOT = Path(__file__).resolve().parent
-else:
-    _colab = Path("/content/rmt-pipeline-hub")
-    _HUB_ROOT = _colab if _colab.exists() else Path.cwd()
 
+def _resolve_hub_root() -> Path:
+    if "__file__" in globals():
+        return Path(__file__).resolve().parent
+
+    # exec(open(...).read()) in Colab: prefer known clone folders, else cwd.
+    for candidate in (
+        Path.cwd(),
+        Path("/content/hub-test"),
+        Path("/content/rmt-pipeline-hub"),
+    ):
+        if (candidate / "hub" / "app.py").exists() and (candidate / "registry.yaml").exists():
+            return candidate.resolve()
+    return Path.cwd().resolve()
+
+
+_HUB_ROOT = _resolve_hub_root()
 if str(_HUB_ROOT) not in sys.path:
     sys.path.insert(0, str(_HUB_ROOT))
-
 os.chdir(_HUB_ROOT)
+
+print(f"Hub root: {_HUB_ROOT}")
+
+try:
+    import gradio  # noqa: F401
+    import yaml  # noqa: F401
+except ImportError as exc:
+    raise SystemExit(
+        "Missing dependency. In Colab run:\n"
+        "  !pip install -q -r requirements.txt\n"
+        f"Then re-run this cell. Original error: {exc}"
+    ) from exc
 
 from hub.app import launch  # noqa: E402
 
