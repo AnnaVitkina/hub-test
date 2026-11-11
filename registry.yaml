@@ -1,0 +1,16 @@
+# Hub shipper/flow → pipeline repo mapping.
+# Pipeline repos are never modified; the hub only clones and runs them.
+
+shippers:
+  Siemens:
+    flows:
+      Sea:
+        repo_url: https://github.com/AnnaVitkina/Siemens-Sea.git
+        clone_dir: Siemens-Sea
+        entry_script: run_pipeline.py
+  Aptiv:
+    flows:
+      Air:
+        repo_url: https://github.com/AnnaVitkina/Aptiv-Air.git
+        clone_dir: Aptiv-Air
+        entry_script: xlsx_to_df.py
