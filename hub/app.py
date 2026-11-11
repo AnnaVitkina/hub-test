@@ -380,11 +380,13 @@ def build_app() -> gr.Blocks:
 def launch(share: bool = False, server_port: int | None = 7860) -> None:
     demo = build_app()
     demo.queue()
+    print("Starting Gradio… look for the local URL below (or Colab’s proxy link).")
     demo.launch(
         share=share,
+        server_name="0.0.0.0",
         server_port=server_port,
         inline=False,
-        quiet=True,
+        quiet=False,
         footer_links=[],
         theme=getattr(demo, "_hub_theme", None),
         css=getattr(demo, "_hub_css", None),
